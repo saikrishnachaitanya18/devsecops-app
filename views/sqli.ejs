@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Injection — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>💉 SQL Injection</h1>
+      <p>Vulnerabilities: GET param SQLi, POST body SQLi, URL param SQLi, Error-based SQLi</p>
+    </div>
+
+    <!-- GET Parameter SQL Injection -->
+    <div class="form-card">
+      <h2>1. User Search (GET — SQL Injection)</h2>
+      <form method="GET" action="/sqli">
+        <div class="form-group">
+          <label for="search">Search Users</label>
+          <input type="text" id="search" name="search" value="<%= search %>" placeholder="admin' OR '1'='1">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%- error %></div>
+      <% } %>
+
+      <% if (results && results.length > 0) { %>
+        <h3>Results:</h3>
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Password</th></tr></thead>
+          <tbody>
+          <% results.forEach(r => { %>
+            <tr>
+              <td><%= r.id %></td>
+              <td><%= r.username %></td>
+              <td><%= r.email %></td>
+              <td><%= r.role %></td>
+              <td><%= r.password %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+
+      <div class="hint-box">
+        <h4>💡 Payloads</h4>
+        <code>' OR '1'='1</code><br>
+        <code>' UNION SELECT 1,username,password,role,email,ssn,credit_card FROM users --</code>
+      </div>
+    </div>
+
+    <!-- POST Parameter SQL Injection -->
+    <div class="form-card">
+      <h2>2. Post Search (POST — SQL Injection)</h2>
+      <form method="POST" action="/sqli/search">
+        <div class="form-group">
+          <label for="query">Search Posts</label>
+          <input type="text" id="query" name="query" placeholder="' OR '1'='1">
+        </div>
+        <button type="submit" class="btn btn-primary">Search Posts</button>
+      </form>
+
+      <% if (postError) { %>
+        <div class="alert alert-error"><%- postError %></div>
+      <% } %>
+
+      <% if (postResult && postResult.length > 0) { %>
+        <h3>Post Results:</h3>
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Title</th><th>Content</th><th>Author</th></tr></thead>
+          <tbody>
+          <% postResult.forEach(p => { %>
+            <tr>
+              <td><%= p.id %></td>
+              <td><%= p.title %></td>
+              <td><%= p.content %></td>
+              <td><%= p.author %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <!-- URL Parameter SQL Injection -->
+    <div class="form-card">
+      <h2>3. User Lookup (URL Param — SQL Injection)</h2>
+      <p>Try: <a href="/sqli/lookup/1">/sqli/lookup/1</a> | <a href="/sqli/lookup/1 OR 1=1">/sqli/lookup/1 OR 1=1</a></p>
+
+      <% if (lookupError) { %>
+        <div class="alert alert-error"><%- lookupError %></div>
+      <% } %>
+
+      <% if (lookupResult) { %>
+        <h3>Lookup Result:</h3>
+        <pre><%= JSON.stringify(lookupResult, null, 2) %></pre>
+      <% } %>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

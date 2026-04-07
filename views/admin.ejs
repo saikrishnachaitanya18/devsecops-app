@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>👑 Admin Panel</h1>
+      <p>Vulnerabilities: Broken Access Control, Information Disclosure, Arbitrary SQL/CMD execution</p>
+    </div>
+
+    <!-- Admin Data -->
+    <div class="cards-grid">
+      <div class="card card-admin">
+        <h3>User Management</h3>
+        <p>Manage existing user accounts.</p>
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Username</th><th>Role</th></tr></thead>
+          <tbody>
+          <% users.forEach(u => { %>
+            <tr>
+              <td><%= u.id %></td>
+              <td><%= u.username %></td>
+              <td><%= u.role %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card card-admin">
+        <h3>Post Management</h3>
+        <p>Manage blog posts.</p>
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Title</th></tr></thead>
+          <tbody>
+          <% posts.forEach(p => { %>
+            <tr>
+              <td><%= p.id %></td>
+              <td><%= p.title %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Admin Functions -->
+    <div class="form-card">
+      <h2>1. Information Disclosure</h2>
+      <p>Try: <a href="/admin/debug" target="_blank">/admin/debug</a> (Exposes ALL server environment variables)</p>
+    </div>
+
+    <div class="form-card">
+      <h2>2. SQL Console (Arbitrary SQL Execution)</h2>
+      <form id="sql-form">
+        <textarea id="sql-query" rows="3" placeholder="SELECT * FROM users"></textarea>
+        <button type="button" class="btn btn-primary" onclick="runSql()">Execute Query</button>
+      </form>
+      <pre id="sql-result" class="output-box" style="display:none;"></pre>
+    </div>
+
+    <div class="form-card">
+      <h2>3. System Console (Arbitrary Command Execution)</h2>
+      <form id="exec-form">
+        <input type="text" id="exec-cmd" placeholder="whoami">
+        <button type="button" class="btn btn-primary" onclick="runCmd()">Execute Command</button>
+      </form>
+      <pre id="exec-result" class="output-box" style="display:none;"></pre>
+    </div>
+
+    <div class="form-card">
+        <h2>4. Privilege Escalation</h2>
+        <form id="role-form">
+          <input type="number" id="role-id" placeholder="User ID">
+          <input type="text" id="role-name" placeholder="Role (e.g., admin)">
+          <button type="button" class="btn btn-primary" onclick="setRole()">Set Role</button>
+        </form>
+        <pre id="role-result" class="output-box" style="display:none;"></pre>
+      </div>
+
+    <div class="form-card">
+      <h2>⚠️ Danger Zone</h2>
+      <button class="btn btn-danger" onclick="deleteAllUsers()">Delete All Users</button>
+      <pre id="delete-result" class="output-box" style="display:none;"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function runSql() {
+      const sql = document.getElementById('sql-query').value;
+      const res = await fetch('/admin/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sql })
+      });
+      const data = await res.json();
+      const el = document.getElementById('sql-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function runCmd() {
+      const cmd = document.getElementById('exec-cmd').value;
+      const res = await fetch('/admin/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cmd })
+      });
+      const data = await res.json();
+      const el = document.getElementById('exec-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function setRole() {
+      const userId = document.getElementById('role-id').value;
+      const role = document.getElementById('role-name').value;
+      const res = await fetch('/admin/set-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role })
+      });
+      const data = await res.json();
+      const el = document.getElementById('role-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteAllUsers() {
+      if (confirm('Are you SURE you want to delete all users?')) {
+        const res = await fetch('/admin/delete-all-users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        const el = document.getElementById('delete-result');
+        el.style.display = 'block';
+        el.textContent = JSON.stringify(data, null, 2);
+      }
+    }
+  </script>
+  <%- include('partials/footer') %>
+</body>
+</html>

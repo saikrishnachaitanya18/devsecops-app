@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vulnerable Demo App — SAST Scanning Target</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="hero">
+      <h1>🚨 Vulnerable Demo Application</h1>
+      <p class="subtitle">Intentionally vulnerable app for SAST scanning & security training</p>
+      <p class="warning-banner">⚠️ DO NOT DEPLOY TO PRODUCTION — FOR TESTING ONLY ⚠️</p>
+    </div>
+
+    <div class="cards-grid">
+      <a href="/auth/login" class="card card-auth">
+        <div class="card-icon">🔐</div>
+        <h3>Authentication</h3>
+        <p>SQL Injection in login, plaintext passwords, mass assignment, broken session</p>
+        <div class="vuln-tags">
+          <span class="tag">SQLi</span>
+          <span class="tag">Broken Auth</span>
+          <span class="tag">Mass Assignment</span>
+        </div>
+      </a>
+
+      <a href="/sqli" class="card card-sqli">
+        <div class="card-icon">💉</div>
+        <h3>SQL Injection</h3>
+        <p>GET, POST, and URL parameter injection vectors with string concatenation</p>
+        <div class="vuln-tags">
+          <span class="tag">Union SQLi</span>
+          <span class="tag">Error-Based</span>
+          <span class="tag">Blind SQLi</span>
+        </div>
+      </a>
+
+      <a href="/xss" class="card card-xss">
+        <div class="card-icon">📜</div>
+        <h3>Cross-Site Scripting</h3>
+        <p>Reflected XSS, stored XSS, and DOM-based XSS with no sanitization</p>
+        <div class="vuln-tags">
+          <span class="tag">Reflected XSS</span>
+          <span class="tag">Stored XSS</span>
+          <span class="tag">DOM XSS</span>
+        </div>
+      </a>
+
+      <a href="/cmdi" class="card card-cmdi">
+        <div class="card-icon">⚡</div>
+        <h3>Command Injection</h3>
+        <p>OS command injection via exec, execSync, eval(), and vm sandbox escape</p>
+        <div class="vuln-tags">
+          <span class="tag">OS CMDi</span>
+          <span class="tag">eval()</span>
+          <span class="tag">RCE</span>
+        </div>
+      </a>
+
+      <a href="/path" class="card card-path">
+        <div class="card-icon">📁</div>
+        <h3>Path Traversal</h3>
+        <p>Arbitrary file read/write, directory traversal, and local file inclusion</p>
+        <div class="vuln-tags">
+          <span class="tag">LFI</span>
+          <span class="tag">File Read</span>
+          <span class="tag">File Write</span>
+        </div>
+      </a>
+
+      <a href="/idor" class="card card-idor">
+        <div class="card-icon">🔓</div>
+        <h3>IDOR</h3>
+        <p>Insecure direct object references — access, modify, or delete any user's data</p>
+        <div class="vuln-tags">
+          <span class="tag">Broken Access</span>
+          <span class="tag">Priv Escalation</span>
+        </div>
+      </a>
+
+      <a href="/upload" class="card card-upload">
+        <div class="card-icon">📤</div>
+        <h3>File Upload</h3>
+        <p>Unrestricted file upload — no type validation, size limit, or content inspection</p>
+        <div class="vuln-tags">
+          <span class="tag">Unrestricted Upload</span>
+          <span class="tag">Web Shell</span>
+        </div>
+      </a>
+
+      <a href="/deserialization" class="card card-deser">
+        <div class="card-icon">🧬</div>
+        <h3>Deserialization</h3>
+        <p>node-serialize RCE, unsafe YAML, prototype pollution, Function constructor</p>
+        <div class="vuln-tags">
+          <span class="tag">RCE</span>
+          <span class="tag">Prototype Pollution</span>
+          <span class="tag">YAML</span>
+        </div>
+      </a>
+
+      <a href="/ssrf" class="card card-ssrf">
+        <div class="card-icon">🌐</div>
+        <h3>SSRF</h3>
+        <p>Server-side request forgery, open redirect, file:// protocol abuse</p>
+        <div class="vuln-tags">
+          <span class="tag">SSRF</span>
+          <span class="tag">Open Redirect</span>
+          <span class="tag">File Protocol</span>
+        </div>
+      </a>
+
+      <a href="/admin" class="card card-admin">
+        <div class="card-icon">👑</div>
+        <h3>Admin Panel</h3>
+        <p>No auth check, arbitrary SQL, command execution, env variable exposure</p>
+        <div class="vuln-tags">
+          <span class="tag">No Auth</span>
+          <span class="tag">Info Disclosure</span>
+          <span class="tag">Backdoor</span>
+        </div>
+      </a>
+
+      <a href="/api/users" class="card card-api">
+        <div class="card-icon">🔌</div>
+        <h3>Vulnerable API</h3>
+        <p>CORS *, mass data exposure, weak crypto, secrets leak, no rate limiting</p>
+        <div class="vuln-tags">
+          <span class="tag">CORS *</span>
+          <span class="tag">Weak Crypto</span>
+          <span class="tag">Secrets</span>
+        </div>
+      </a>
+
+      <a href="/api/config" class="card card-config">
+        <div class="card-icon">🔑</div>
+        <h3>Secrets & Config</h3>
+        <p>Hardcoded API keys, AWS credentials, DB passwords exposed at /api/config</p>
+        <div class="vuln-tags">
+          <span class="tag">Hardcoded Secrets</span>
+          <span class="tag">API Keys</span>
+          <span class="tag">AWS Creds</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="vulnerability-summary">
+      <h2>📊 Vulnerability Categories Covered</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>OWASP Top 10</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SQL Injection</td><td>A03:2021 – Injection</td><td>8+</td></tr>
+          <tr><td>Cross-Site Scripting (XSS)</td><td>A03:2021 – Injection</td><td>4+</td></tr>
+          <tr><td>Command Injection / RCE</td><td>A03:2021 – Injection</td><td>5+</td></tr>
+          <tr><td>Broken Authentication</td><td>A07:2021 – Auth Failures</td><td>5+</td></tr>
+          <tr><td>Broken Access Control / IDOR</td><td>A01:2021 – Broken Access</td><td>6+</td></tr>
+          <tr><td>Security Misconfiguration</td><td>A05:2021 – Misconfig</td><td>8+</td></tr>
+          <tr><td>Sensitive Data Exposure</td><td>A02:2021 – Crypto Failures</td><td>6+</td></tr>
+          <tr><td>Insecure Deserialization</td><td>A08:2021 – Software Integrity</td><td>4+</td></tr>
+          <tr><td>SSRF</td><td>A10:2021 – SSRF</td><td>4+</td></tr>
+          <tr><td>Unrestricted File Upload</td><td>A04:2021 – Insecure Design</td><td>3+</td></tr>
+          <tr><td>Path Traversal / LFI</td><td>A01:2021 – Broken Access</td><td>4+</td></tr>
+          <tr><td>Hardcoded Secrets</td><td>A02:2021 – Crypto Failures</td><td>5+</td></tr>
+          <tr><td>Weak Cryptography</td><td>A02:2021 – Crypto Failures</td><td>3+</td></tr>
+          <tr><td>Prototype Pollution</td><td>A08:2021 – Software Integrity</td><td>1+</td></tr>
+          <tr><td>Open Redirect</td><td>A01:2021 – Broken Access</td><td>1+</td></tr>
+          <tr><td>CORS Misconfiguration</td><td>A05:2021 – Misconfig</td><td>1+</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSRF — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <%- include('partials/navbar') %>
+    <div class="container">
+      <div class="page-header">
+        <h1>🌐 Server-Side Request Forgery (SSRF)</h1>
+        <p>Vulnerabilities: SSRF, Open Redirect, file:// Protocol Abuse</p>
+      </div>
+
+      <!-- SSRF Fetch -->
+      <div class="form-card">
+        <h2>1. Request Fetcher (SSRF)</h2>
+        <form method="POST" action="/ssrf/fetch">
+          <div class="form-group">
+            <label for="url">URL to Fetch (try http://localhost:3800/api/config)</label>
+            <input type="text" id="url" name="url" placeholder="http://google.com">
+          </div>
+          <button type="submit" class="btn btn-primary">Fetch URL</button>
+        </form>
+
+        <div class="hint-box">
+          <h4>💡 Payloads</h4>
+          <code>http://localhost:3800/api/config</code><br>
+          <code>http://169.254.169.254/latest/meta-data/</code> (AWS Metadata)<br>
+          <code>file:///etc/passwd</code> (if using the file protocol endpoint)
+        </div>
+
+        <% if (fetchResult) { %>
+          <h3>Fetch Result:</h3>
+          <pre class="output-box"><%= fetchResult %></pre>
+          <% } %>
+            <% if (error) { %>
+              <div class="alert alert-error">
+                <%= error %>
+              </div>
+              <% } %>
+      </div>
+
+      <!-- Open Redirect -->
+      <div class="form-card">
+        <h2>2. Open Redirect</h2>
+        <p>Try: <a href="/ssrf/redirect?url=http://evil.com">/ssrf/redirect?url=http://evil.com</a></p>
+      </div>
+
+      <!-- File Read via URL -->
+      <div class="form-card">
+        <h2>3. Local File Read (via file://)</h2>
+        <form id="file-form">
+          <div class="form-group">
+            <label for="fileUrl">File URL</label>
+            <input type="text" id="fileUrl" value="file:///c:/windows/system32/drivers/etc/hosts">
+          </div>
+          <button type="button" class="btn btn-primary" onclick="readUrl()">Fetch Local File</button>
+        </form>
+        <pre id="file-result" class="output-box" style="display:none;"></pre>
+      </div>
+    </div>
+
+    <script>
+      async function readUrl() {
+        const url = document.getElementById('fileUrl').value;
+        const res = await fetch('/ssrf/readurl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        const el = document.getElementById('file-result');
+        el.style.display = 'block';
+        el.textContent = JSON.stringify(data, null, 2);
+      }
+    </script>
+    <%- include('partials/footer') %>
+</body>
+
+</html>

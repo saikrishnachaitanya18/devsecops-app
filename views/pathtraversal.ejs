@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Path Traversal — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>📁 Path Traversal</h1>
+      <p>Vulnerabilities: Directory Traversal, Arbitrary File Read, Arbitrary File Write, LFI</p>
+    </div>
+
+    <!-- File Read -->
+    <div class="form-card">
+      <h2>1. Read File (Path Traversal)</h2>
+      <form method="GET" action="/path/read">
+        <div class="form-group">
+          <label for="file">Filename</label>
+          <input type="text" id="file" name="file" placeholder="../../../../etc/passwd">
+        </div>
+        <button type="submit" class="btn btn-primary">Read File</button>
+      </form>
+
+      <div class="hint-box">
+        <h4>💡 Payloads</h4>
+        <code>../../../../etc/passwd</code><br>
+        <code>..\..\..\..\windows\system32\drivers\etc\hosts</code><br>
+        <code>../../../../proc/self/environ</code>
+      </div>
+
+      <% if (fileContent) { %>
+        <h3>File Contents:</h3>
+        <pre class="output-box"><%= fileContent %></pre>
+      <% } %>
+    </div>
+
+    <!-- File Download -->
+    <div class="form-card">
+      <h2>2. Download File (Path Traversal)</h2>
+      <p>Try: <a href="/path/download?file=../../../../etc/passwd">/path/download?file=../../../../etc/passwd</a></p>
+      <p>Try: <a href="/path/download?file=../../../app.js">/path/download?file=../../../app.js</a></p>
+    </div>
+
+    <!-- File Write -->
+    <div class="form-card">
+      <h2>3. Write File (Arbitrary File Write)</h2>
+      <form method="POST" action="/path/write">
+        <div class="form-group">
+          <label for="filename">Filename</label>
+          <input type="text" id="filename" name="filename" placeholder="../../malicious.js">
+        </div>
+        <div class="form-group">
+          <label for="content">File Content</label>
+          <textarea id="content" name="content" rows="4" placeholder="Malicious content here..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Write File</button>
+      </form>
+
+      <% if (writeResult) { %>
+        <div class="alert alert-success"><%= writeResult %></div>
+      <% } %>
+    </div>
+
+    <!-- LFI -->
+    <div class="form-card">
+      <h2>4. Template Inclusion (LFI)</h2>
+      <p>Try: <a href="/path/template?name=../../app">/path/template?name=../../app</a></p>
+      <p>Try: <a href="/path/template?name=login">/path/template?name=login</a></p>
+    </div>
+
+    <% if (error) { %>
+      <div class="form-card">
+        <div class="alert alert-error"><%= error %></div>
+      </div>
+    <% } %>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

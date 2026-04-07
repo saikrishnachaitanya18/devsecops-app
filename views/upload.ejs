@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>📤 File Upload</h1>
+      <p>Vulnerabilities: Unrestricted Upload, No File Validation, Path Traversal in Filename</p>
+    </div>
+
+    <div class="form-card">
+      <h2>1. Single File Upload</h2>
+      <form method="POST" action="/upload/single" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="file">Choose File (any type accepted!)</label>
+          <input type="file" id="file" name="file">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+
+      <% if (message) { %>
+        <div class="alert alert-success"><%= message %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+    </div>
+
+    <div class="form-card">
+      <h2>2. Multiple File Upload</h2>
+      <form method="POST" action="/upload/multiple" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="files">Choose Files</label>
+          <input type="file" id="files" name="files" multiple>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload All</button>
+      </form>
+    </div>
+
+    <% if (files && files.length > 0) { %>
+      <div class="form-card">
+        <h2>Uploaded Files</h2>
+        <table class="data-table">
+          <thead><tr><th>Filename</th><th>Direct Link</th></tr></thead>
+          <tbody>
+          <% files.forEach(f => { %>
+            <tr>
+              <td><%= f %></td>
+              <td><a href="/uploads/<%= f %>" target="_blank">View</a> | <a href="/upload/file/<%= f %>">Download</a></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <div class="hint-box">
+      <h4>💡 Attack Vectors</h4>
+      <p>Upload a .html file with JavaScript → Stored XSS</p>
+      <p>Upload a .js file → Potential code execution</p>
+      <p>Upload filename with path traversal: <code>../../malware.js</code></p>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

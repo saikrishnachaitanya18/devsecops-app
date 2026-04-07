@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDOR — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>🔓 Insecure Direct Object Reference (IDOR)</h1>
+      <p>Vulnerabilities: Broken Access Control, Horizontal Privilege Escalation, No Authorization</p>
+    </div>
+
+    <div class="form-card">
+      <h2>User List</h2>
+      <table class="data-table">
+        <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Actions</th></tr></thead>
+        <tbody>
+        <% users.forEach(u => { %>
+          <tr>
+            <td><%= u.id %></td>
+            <td><%= u.username %></td>
+            <td><%= u.email %></td>
+            <td>
+              <a href="/idor/user/<%= u.id %>" class="btn btn-small">View Full Data (API)</a>
+              <a href="/auth/profile/<%= u.id %>" class="btn btn-small">View Profile</a>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+
+      <div class="hint-box">
+        <h4>💡 IDOR Tests</h4>
+        <p>API endpoints return ALL user data (password, SSN, credit card):</p>
+        <code>GET /idor/user/1</code><br>
+        <code>POST /idor/user/1/update — change role to admin</code><br>
+        <code>POST /idor/user/2/delete — delete any user</code>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h2>Modify User (IDOR + Privilege Escalation)</h2>
+      <form id="update-form">
+        <div class="form-group">
+          <label for="update-id">User ID</label>
+          <input type="number" id="update-id" value="2">
+        </div>
+        <div class="form-group">
+          <label for="update-email">New Email</label>
+          <input type="text" id="update-email" value="hacked@evil.com">
+        </div>
+        <div class="form-group">
+          <label for="update-role">New Role</label>
+          <input type="text" id="update-role" value="admin">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="updateUser()">Update User</button>
+      </form>
+      <pre id="update-result" class="output-box" style="display:none;"></pre>
+    </div>
+
+    <div class="form-card">
+      <h2>Delete User (No Authorization)</h2>
+      <form id="delete-form">
+        <div class="form-group">
+          <label for="delete-id">User ID to Delete</label>
+          <input type="number" id="delete-id" value="3">
+        </div>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete User</button>
+      </form>
+      <pre id="delete-result" class="output-box" style="display:none;"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function updateUser() {
+      const id = document.getElementById('update-id').value;
+      const email = document.getElementById('update-email').value;
+      const role = document.getElementById('update-role').value;
+
+      const res = await fetch(`/idor/user/${id}/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, role })
+      });
+      const data = await res.json();
+      const el = document.getElementById('update-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteUser() {
+      const id = document.getElementById('delete-id').value;
+      const res = await fetch(`/idor/user/${id}/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      const el = document.getElementById('delete-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+  <%- include('partials/footer') %>
+</body>
+</html>

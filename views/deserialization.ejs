@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deserialization — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>🧬 Insecure Deserialization</h1>
+      <p>Vulnerabilities: node-serialize RCE, Unsafe YAML, Prototype Pollution, Function Constructor</p>
+    </div>
+
+    <!-- node-serialize -->
+    <div class="form-card">
+      <h2>1. node-serialize Deserialization (RCE)</h2>
+      <form method="POST" action="/deserialization/deserialize">
+        <div class="form-group">
+          <label for="data">Serialized Data</label>
+          <textarea id="data" name="data" rows="4" placeholder='{"rce":"_$$ND_FUNC$$_function(){require(\"child_process\").execSync(\"whoami\")}()"}'></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Deserialize</button>
+      </form>
+
+      <% if (output) { %>
+        <h3>Deserialized Object:</h3>
+        <pre class="output-box"><%= output %></pre>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+    </div>
+
+    <!-- YAML -->
+    <div class="form-card">
+      <h2>2. YAML Parser (Unsafe yaml.load)</h2>
+      <form method="POST" action="/deserialization/yaml">
+        <div class="form-group">
+          <label for="yamlData">YAML Data</label>
+          <textarea id="yamlData" name="yamlData" rows="4" placeholder="name: test&#10;version: 1.0"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Parse YAML</button>
+      </form>
+
+      <% if (yamlOutput) { %>
+        <h3>Parsed Result:</h3>
+        <pre class="output-box"><%= yamlOutput %></pre>
+      <% } %>
+      <% if (yamlError) { %>
+        <div class="alert alert-error"><%= yamlError %></div>
+      <% } %>
+    </div>
+
+    <!-- Prototype Pollution -->
+    <div class="form-card">
+      <h2>3. Object Merge (Prototype Pollution via _.merge)</h2>
+      <form method="POST" action="/deserialization/merge">
+        <div class="form-group">
+          <label for="target">Target Object (JSON)</label>
+          <input type="text" id="target" name="target" value='{"name": "user"}'>
+        </div>
+        <div class="form-group">
+          <label for="source">Source Object (JSON)</label>
+          <input type="text" id="source" name="source" value='{"__proto__": {"isAdmin": true}}' placeholder='{"__proto__": {"isAdmin": true}}'>
+        </div>
+        <button type="submit" class="btn btn-primary">Merge Objects</button>
+      </form>
+
+      <% if (mergeOutput) { %>
+        <h3>Merged Result:</h3>
+        <pre class="output-box"><%= mergeOutput %></pre>
+      <% } %>
+      <% if (mergeError) { %>
+        <div class="alert alert-error"><%= mergeError %></div>
+      <% } %>
+    </div>
+
+    <!-- Function Constructor -->
+    <div class="form-card">
+      <h2>4. Function Constructor (Code Execution)</h2>
+      <form id="exec-form">
+        <div class="form-group">
+          <label for="funcBody">Function Body</label>
+          <textarea id="funcBody" rows="3" placeholder='return 2 + 2'></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="executeFunc()">Execute</button>
+      </form>
+      <pre id="exec-result" class="output-box" style="display:none;"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function executeFunc() {
+      const funcBody = document.getElementById('funcBody').value;
+      const res = await fetch('/deserialization/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ funcBody })
+      });
+      const data = await res.json();
+      const el = document.getElementById('exec-result');
+      el.style.display = 'block';
+      el.textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+  <%- include('partials/footer') %>
+</body>
+</html>

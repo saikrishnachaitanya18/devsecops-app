@@ -1,0 +1,24 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <a href="/">🚨 VulnApp</a>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/sqli">SQLi</a>
+    <a href="/xss">XSS</a>
+    <a href="/cmdi">CMDi</a>
+    <a href="/path">Path Traversal</a>
+    <a href="/idor">IDOR</a>
+    <a href="/upload">Upload</a>
+    <a href="/deserialization">Deserialization</a>
+    <a href="/ssrf">SSRF</a>
+    <a href="/admin">Admin</a>
+    <a href="/api/users">API</a>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <a href="/auth/profile/<%= user.id %>" class="nav-user">👤 <%= user.username %></a>
+      <a href="/auth/logout" class="nav-logout">Logout</a>
+    <% } else { %>
+      <a href="/auth/login" class="nav-login">Login</a>
+    <% } %>
+  </div>
+</nav>

