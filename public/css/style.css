@@ -1,11 +1,13 @@
 /* Standard CSS for the Vulnerable Demo App */
 :root {
-  --primary: #c0392b; /* Safety Red */
+  --primary: #c0392b;
+  /* Safety Red */
   --secondary: #2c3e50;
   --accent: #f39c12;
   --bg: #f5f6fa;
   --card-bg: #ffffff;
   --text: #2f3640;
+
   --border: #dcdde1;
 }
 
@@ -52,16 +54,28 @@ body {
 }
 
 .nav-user {
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 0.5rem 1rem;
   border-radius: 4px;
 }
 
 /* Typography */
-h1 { margin-bottom: 0.5rem; color: var(--primary); }
-h2 { margin-top: 2rem; color: var(--secondary); border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+h1 {
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
 
-.subtitle { font-size: 1.2rem; color: #7f8c8d; }
+h2 {
+  margin-top: 2rem;
+  color: var(--secondary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
 
 .warning-banner {
   background-color: #ff4757;
@@ -94,33 +108,78 @@ h2 { margin-top: 2rem; color: var(--secondary); border-bottom: 2px solid var(--p
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-.card h3 { margin: 0 0 10px 0; color: var(--secondary); }
-.card-sqli { border-left-color: #e67e22; }
-.card-xss { border-left-color: #3498db; }
-.card-cmdi { border-left-color: #9b59b6; }
-.card-path { border-left-color: #27ae60; }
-.card-idor { border-left-color: #f1c40f; }
-.card-auth { border-left-color: #c0392b; }
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
 
-.vuln-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 15px; }
-.tag { background: #eee; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; }
+.card h3 {
+  margin: 0 0 10px 0;
+  color: var(--secondary);
+}
+
+.card-sqli {
+  border-left-color: #e67e22;
+}
+
+.card-xss {
+  border-left-color: #3498db;
+}
+
+.card-cmdi {
+  border-left-color: #9b59b6;
+}
+
+.card-path {
+  border-left-color: #27ae60;
+}
+
+.card-idor {
+  border-left-color: #f1c40f;
+}
+
+.card-auth {
+  border-left-color: #c0392b;
+}
+
+.vuln-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.tag {
+  background: #eee;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
 
 /* Forms */
 .form-card {
   background: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
 }
 
-.form-group { margin-bottom: 1.5rem; }
-.form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-.form-group input, .form-group textarea {
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -136,9 +195,20 @@ h2 { margin-top: 2rem; color: var(--secondary); border-bottom: 2px solid var(--p
   font-weight: bold;
 }
 
-.btn-primary { background: var(--secondary); color: white; }
-.btn-danger { background: var(--primary); color: white; }
-.btn-small { padding: 4px 10px; font-size: 0.8rem; }
+.btn-primary {
+  background: var(--secondary);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-small {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
 
 /* Tables */
 .data-table {
@@ -147,18 +217,35 @@ h2 { margin-top: 2rem; color: var(--secondary); border-bottom: 2px solid var(--p
   margin: 1rem 0;
 }
 
-.data-table th, .data-table td {
+.data-table th,
+.data-table td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
 }
 
-.data-table th { background-color: #f8f9fa; }
+.data-table th {
+  background-color: #f8f9fa;
+}
 
 /* Notifications */
-.alert { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
-.alert-error { background: #fab1a0; color: #d63031; border: 1px solid #d63031; }
-.alert-success { background: #55efc4; color: #00b894; border: 1px solid #00b894; }
+.alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: #fab1a0;
+  color: #d63031;
+  border: 1px solid #d63031;
+}
+
+.alert-success {
+  background: #55efc4;
+  color: #00b894;
+  border: 1px solid #00b894;
+}
 
 .hint-box {
   background: #fff3cd;
