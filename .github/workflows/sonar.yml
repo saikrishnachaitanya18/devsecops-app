@@ -3,20 +3,20 @@ name: SonarQube Scan
 on:
   push:
     branches:
-      - development   # change to master if needed
+      - development
 
 jobs:
   sonar:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Run Sonar Scanner
         run: |
           sonar-scanner \
             -Dsonar.projectKey=devsecops-app \
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://172.19.111.124:9000 \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.branch.name=development
