@@ -18,5 +18,4 @@ jobs:
             -Dsonar.projectKey=devsecops-app \
             -Dsonar.sources=. \
             -Dsonar.host.url=http://localhost:9000 \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.branch.name=development
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
