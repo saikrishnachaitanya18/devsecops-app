@@ -125,6 +125,7 @@ app.use('/ssrf', require('./routes/ssrf'));
 app.use('/admin', require('./routes/admin'));
 app.use('/api', require('./routes/api'));
 app.use('/classic', require('./routes/classic_vulnerabilities')); // NEW: Classic SAST patterns
+app.use('/sonar', require('./routes/sonar')); // NEW: SonarQube Baits
 
 // ----------------------------------------------------------------
 // VULNERABILITY: Verbose error handler — leaks stack traces
