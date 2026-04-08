@@ -15,7 +15,7 @@ repos:
       - id: eslint
         files: \.(js|ts)$
 
-  # 🔐 Secret detection (IMPORTANT)
+  # Secret detection (IMPORTANT)
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.18.0
     hooks:
