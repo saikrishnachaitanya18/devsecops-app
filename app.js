@@ -187,3 +187,27 @@ app.get('/admin-access', (req, res) => {
       });
   }
 });
+
+// SONARQUBE 'BUGS' AND 'CODE SMELLS' (Will show up in Issues instead of Hotspots)
+app.get('/obvious-bugs', (req, res) => {
+    // Sonar BUG: Unreachable code
+    return res.send("Done");
+    console.log("This will never run"); // Noncompliant
+    
+    // Sonar BUG: Identical expressions on both sides
+    if (req.query.param == req.query.param) { // Noncompliant
+        let a = 1;
+    }
+    
+    // Sonar BUG: Useless assignment
+    let useless = 10;
+    useless = 10;
+    
+    // Sonar SMELL: Unused variable
+    const unusedVar = "Why am I here?"; // Noncompliant
+});
+
+app.get('/obvious-vuln', (req, res) => {
+    // Sonar VULNERABILITY: XSS (Reflected Cross-Site Scripting)
+    res.send("<html><body>" + req.query.unsafe_input + "</body></html>"); // Noncompliant
+});
