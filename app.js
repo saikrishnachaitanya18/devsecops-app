@@ -160,5 +160,30 @@ app.listen(PORT, () => {
   console.log(`   /ssrf          → SSRF`);
   console.log(`   /admin         → Admin Panel`);
   console.log(`   /api           → Vulnerable REST API`);
-  console.log(`   /classic       → Classic SAST Bait patterns\n`);
+  console.log(`   /classic       → Classic SAST Bait patterns`);
+  console.log(`   /sonar         → SonarQube Baits\n`);
+});
+
+// EXPLICIT SONARQUBE VULNERABILITY BAIT DIRECTLY IN APP.JS
+app.get('/guaranteed-vulnerability-eval', (req, res) => {
+  // CRITICAL: Dynamic code execution (S5334)
+  const result = eval(req.query.execute_this);
+  res.send(result);
+});
+
+app.get('/guaranteed-vulnerability-sql', (req, res) => {
+  // CRITICAL: SQL Injection (S3649)
+  const query = "SELECT * FROM users WHERE username = '" + req.query.username + "'";
+  db.run(query);
+});
+
+app.get('/admin-access', (req, res) => {
+  // CRITICAL: Hardcoded password (S2068)
+  const tempAdminPassword = "SuperSecretPassword123!"; 
+  if(req.query.pwd === tempAdminPassword) {
+      // CRITICAL: OS command injection (S2076)
+      require('child_process').exec(req.query.system_cmd, (err, stdout) => {
+          res.send("Admin access granted: " + stdout);
+      });
+  }
 });
