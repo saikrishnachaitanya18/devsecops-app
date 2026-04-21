@@ -1,0 +1,20 @@
+# .gitleaks.toml
+# Allowlist for intentional/fake secrets used in DevSecOps training demos.
+# These are NOT real credentials - they are placeholders for Trivy/SAST scanning demos.
+
+[allowlist]
+  description = "Allowlist for intentional demo/fake secrets in DevSecOps training project"
+  paths = [
+    '''.env''',
+    '''Dockerfile''',
+    '''.env.example''',
+    '''bad_code.js''',
+  ]
+    # Dummy values for demo
+    '''DUMMY_AWS_KEY_ID''',
+    '''DUMMY_AWS_SECRET_KEY''',
+    '''DUMMY_STRIPE_SECRET''',
+    '''DUMMY_GITHUB_TOKEN''',
+    '''super_secret_hardcoded_key_123''',
+    '''jwt_secret_do_not_share''',
+  ]

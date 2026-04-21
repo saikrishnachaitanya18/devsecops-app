@@ -1,0 +1,5 @@
+{
+    "name": "invalid JSON",
+    "missing_quotes_around_key": 123,
+    "trailing_comma": "bad"
+}

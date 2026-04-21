@@ -8,17 +8,17 @@ const DB_PASSWORD = "mySuperSecretPassword123!"; // Sonar: S2068 (Hardcoded Cred
 const AWS_SECRET = "AKIAIOSFODNN7EXAMPLE"; // Sonar: S2068
 
 router.get('/sq', (req, res) => {
-    
+
     // Sonar: S2245 (Using pseudorandom number generators is security-sensitive)
     const randomToken = Math.random().toString();
-    
+
     // Sonar: S5542 (Encryption algorithms should be secure)
     const cipher = crypto.createCipher('des', DB_PASSWORD);
-    
+
     // Sonar: S5547 (Hashing algorithms should be secure)
     const hash = crypto.createHash('sha1').update('password').digest('hex');
     const md5Hash = crypto.createHash('md5').update('data').digest('hex');
-    
+
     // Sonar: S5334 (Dynamic code execution)
     const userInput = req.query.input;
     const result = eval(userInput);
@@ -42,7 +42,7 @@ router.get('/sq', (req, res) => {
 // Sonar: S5144 (SSRF vulnerability)
 router.get('/fetch', (req, res) => {
     const targetUrl = req.query.url;
-    
+
     http.get(targetUrl, (response) => {
         let data = '';
         response.on('data', (chunk) => data += chunk);

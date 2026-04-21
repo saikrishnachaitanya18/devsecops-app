@@ -1,0 +1,8 @@
+# NOTE: This .dockerignore is intentionally INCOMPLETE for demo purposes
+# A proper one would exclude .env, node_modules, secrets, etc.
+# Here we are letting .env be copied to demonstrate the vulnerability
+
+# Only ignoring git-related files
+.git
+.gitignore
+README.md

@@ -8,15 +8,17 @@ repos:
       - id: check-json
       - id: check-yaml
 
-  # 🔹 Node.js linting (ESLint)
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.0.0
-    hooks:
-      - id: eslint
-        files: \.(js|ts)$
+  # 🔹 Node.js linting (ESLint) - disabled, SonarQube handles JS SAST
+  # - repo: https://github.com/pre-commit/mirrors-eslint
+  #   rev: v9.0.0
+  #   hooks:
+  #     - id: eslint
+  #       files: \.(js|ts)$
+
 
   # Secret detection (IMPORTANT)
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.18.0
     hooks:
       - id: gitleaks
+        args: ["--config=.gitleaks.toml"]

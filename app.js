@@ -179,7 +179,7 @@ app.get('/guaranteed-vulnerability-sql', (req, res) => {
 
 app.get('/admin-access', (req, res) => {
   // CRITICAL: Hardcoded password (S2068)
-  const tempAdminPassword = "SuperSecretPassword123!"; 
+  const tempAdminPassword = "SuperSecretPassword123!";
   if(req.query.pwd === tempAdminPassword) {
       // CRITICAL: OS command injection (S2076)
       require('child_process').exec(req.query.system_cmd, (err, stdout) => {
@@ -193,16 +193,16 @@ app.get('/obvious-bugs', (req, res) => {
     // Sonar BUG: Unreachable code
     return res.send("Done");
     console.log("This will never run"); // Noncompliant
-    
+
     // Sonar BUG: Identical expressions on both sides
     if (req.query.param == req.query.param) { // Noncompliant
         let a = 1;
     }
-    
+
     // Sonar BUG: Useless assignment
     let useless = 10;
     useless = 10;
-    
+
     // Sonar SMELL: Unused variable
     const unusedVar = "Why am I here?"; // Noncompliant
 });
